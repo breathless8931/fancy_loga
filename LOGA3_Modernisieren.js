@@ -1,5 +1,5 @@
 /**
- * Fancy LOGA — Midnight Emerald
+ * Fancy LOGA — Midnight Emerald / Diagnoseversion 4
  * Rein optisches, manuell aktivierbares Dark Theme für LOGA3.
  * Kein automatischer Start, keine Datenzugriffe, keine Netzwerkrequests.
  * Zweiter Klick schaltet es aus. Neuladen stellt das Original wieder her.
@@ -11,6 +11,32 @@
   const ROOT_CLASS = "loga-manual-modern";
   const STATE_KEY = "__LOGA3_MANUAL_MODERN_V1__";
   const STYLE_ID = "fancy-loga-modern-style";
+  const BUILD = "4.0.0-pinned";
+  const STATUS_ID = "fancy-loga-version-indicator";
+  window.__FANCY_LOGA_BUILD__ = BUILD;
+
+  function showStatus(message, error = false) {
+    let el = document.getElementById(STATUS_ID);
+    if (!el) {
+      el = document.createElement("div");
+      el.id = STATUS_ID;
+      el.setAttribute("role", "status");
+      Object.assign(el.style, {
+        position: "fixed", top: "16px", right: "16px",
+        zIndex: "2147483647", padding: "11px 15px",
+        background: "#14252f", color: "#eafaf3",
+        border: "1px solid #49cfa2",
+        borderRadius: "10px",
+        boxShadow: "0 8px 28px rgba(0,0,0,.35)",
+        font: "600 13px/1.5 system-ui,sans-serif",
+        maxWidth: "350px", pointerEvents: "none"
+      });
+      (document.body || document.documentElement).appendChild(el);
+    }
+    el.style.borderColor = error ? "#e49b70" : "#49cfa2";
+    el.textContent = message;
+  }
+
 
   if (location.hostname !== "tp.pi-asp.de" ||
       !/^\/loga3(?:\/|$)/i.test(location.pathname)) {
@@ -629,6 +655,36 @@ html.loga-manual-modern .dashboard-view .calendar .DayPicker-NavButton {
   const root = document.documentElement;
   let sheet = null;
   let styleTag = null;
+  // Das alte, funktionierende Script setzte Variablen direkt auf :root.
+  // Das ist stärker als die Theme-Stylesheets und funktioniert unabhängig
+  // von der Reihenfolge, in der React weitere Style-Tags hinzufügt.
+  const originalVars = new Map();
+  const forcedDashboardVars = {
+    "--l3-dashboard-green-light": "#1b2935",
+    "--l3-dashboard-green-dark": "#0e141d",
+    "--l3-dashboard-background-gradient-start-color": "#141f2c",
+    "--l3-dashboard-background-gradient-end-color": "#0e141d",
+    "--l3-dashboard-toolbar-passive-color": "#182735",
+    "--l3-dashboard-toolbar-active-color": "#22393f"
+  };
+
+  function forceDashboardVars() {
+    for (const [name, value] of Object.entries(forcedDashboardVars)) {
+      originalVars.set(name, {
+        value: root.style.getPropertyValue(name),
+        priority: root.style.getPropertyPriority(name)
+      });
+      root.style.setProperty(name, value, "important");
+    }
+  }
+  function restoreDashboardVars() {
+    for (const [name, previous] of originalVars) {
+      if (previous.value) root.style.setProperty(name, previous.value, previous.priority);
+      else root.style.removeProperty(name);
+    }
+    originalVars.clear();
+  }
+
 
   // Der An/Aus-Schalter wird sofort registriert, auch während DarkReader lädt.
   const session = {
@@ -637,6 +693,8 @@ html.loga-manual-modern .dashboard-view .calendar .DayPicker-NavButton {
     stop() {
       this.stopped = true;
       root.classList.remove(ROOT_CLASS);
+      document.getElementById(STATUS_ID)?.remove();
+      restoreDashboardVars();
       if (sheet && "adoptedStyleSheets" in document) {
         document.adoptedStyleSheets = document.adoptedStyleSheets.filter(s => s !== sheet);
       }
@@ -667,8 +725,10 @@ html.loga-manual-modern .dashboard-view .calendar .DayPicker-NavButton {
       (document.head || root).appendChild(styleTag);
     }
     root.classList.add(ROOT_CLASS);
+    forceDashboardVars();
     window[STATE_KEY] = session;
-    console.info("Fancy LOGA: CSS aktiv; DarkReader wird geladen.");
+    showStatus("Fancy LOGA v4 geladen – DarkReader startet …");
+    console.info("Fancy LOGA v4: neue Version geladen, CSS aktiv; DarkReader wird geladen.");
 
     // Die alte Version hat DarkReader erfolgreich als Basis genutzt.
     // Wir übernehmen das Prinzip, aber nicht das alte Einstellungs-Panel,
@@ -677,6 +737,7 @@ html.loga-manual-modern .dashboard-view .calendar .DayPicker-NavButton {
       const reader = await loadDarkReader();
       if (session.stopped) return;
       if (!reader) {
+        showStatus("Fancy LOGA v4 geladen – DarkReader blockiert (CSP/Netzwerk).", true);
         console.warn("Fancy LOGA: DarkReader konnte nicht geladen werden. CSS-Fallback bleibt aktiv (CSP/Netzwerk prüfen).");
         return;
       }
@@ -686,14 +747,17 @@ html.loga-manual-modern .dashboard-view .calendar .DayPicker-NavButton {
           reader.enable({ brightness: 100, contrast: 90, sepia: 10 });
           session.ownsDarkReader = true;
         }
-        console.info("Fancy LOGA: Dark Theme inkl. DarkReader aktiv. Erneuter Klick schaltet Fancy LOGA aus.");
+        showStatus("Fancy LOGA v4 – DarkReader aktiv");
+        console.info("Fancy LOGA v4: Dark Theme inkl. DarkReader aktiv.");
       } catch (error) {
+        showStatus("Fancy LOGA v4 geladen – DarkReader konnte nicht starten.", true);
         console.warn("Fancy LOGA: DarkReader konnte nicht aktiviert werden; CSS-Fallback ist aktiv.", error);
       }
     })();
   } catch (error) {
     session.stop();
     if (window[STATE_KEY] === session) delete window[STATE_KEY];
+    showStatus("Fancy LOGA v4 – Fehler beim Aktivieren", true);
     console.error("Fancy LOGA konnte das Theme nicht aktivieren:", error);
   }
 })();
