@@ -1,37 +1,35 @@
-# Fancy LOGA — Midnight Emerald
+# Fancy LOGA – Midnight Emerald
 
-Ein **manuell aktivierbares Dark Theme** für die Oberfläche von LOGA3 auf tp.pi-asp.de.
+Ein manuell aktivierbares Dark Theme für die LOGA3-Oberfläche auf `tp.pi-asp.de`.
 
-## Was wird verändert?
+## Technik
 
-- Dunkle Anthrazit- und Blautöne für Flächen, Tabellen, Abschnitte und Dialoge
-- Grüne Akzente für Navigation, Buttons und aktive Elemente
-- Verbesserter Kontrast für Eingabefelder, Beschriftungen und Text
-- Optische Details: Schatten, abgerundete Ecken und Hover-Effekte
+- **DarkReader 4.9.58** als Basis für die automatische Dunkelfärbung dynamischer LOGA3-Komponenten.
+- Ergänzende, gezielte CSS-Regeln für Dashboard-Hintergrund, Kacheln, Kalender, Schnellzugriffsleiste, Buttons und Tabellen.
+- Die Selektoren `.dashboard-view .dashboard-layout`, `.dashboard-widget` und `.quick-add-sd-wrapper` sowie die DarkReader-Idee stammen aus der älteren, vom Nutzer bereitgestellten Datei [fancy_loga.js](fancy_loga.js).
+- Kein Einstellungsmenü, keine Bild-/GIF-Hintergründe, kein Speichern von Konfigurationen im Browser.
+- Die Anwendung selbst und alle fachlichen Daten bleiben unverändert; es werden nur Darstellungsregeln im Browser verändert.
 
-**Nur CSS:** keine Änderungen an Funktionen, Serverdaten, Formularwerten oder Positionen. Spezialansichten (z. B. komplexe Dienstplanraster oder Diagramme) können noch helle Bereiche enthalten und benötigen eventuell gezielte Anpassungen.
+## Bookmarklet nutzen
 
-## Lesezeichen installieren
+1. Den gesamten Inhalt von [bookmarklet.txt](bookmarklet.txt) kopieren (beginnt mit `javascript:`).
+2. In Chrome/Edge ein Lesezeichen namens **Fancy LOGA** erstellen und den Code als URL einfügen.
+3. LOGA3 unter `https://tp.pi-asp.de/loga3/` öffnen und anmelden.
+4. Bookmarklet anklicken: Design ein. Nochmals anklicken: Design aus. Nach einem Neuladen: ursprüngliches Design.
 
-1. Öffne [bookmarklet.txt](bookmarklet.txt) und kopiere den **gesamten** Inhalt ab \`javascript:\`.
-2. Erstelle in Chrome/Edge ein Lesezeichen mit dem Namen \`Fancy LOGA\`.
-3. Füge den Code in das **URL-Feld** des Lesezeichens ein.
-4. Melde dich auf \`https://tp.pi-asp.de/loga3/\` an und klicke auf das Lesezeichen.
+Das Lesezeichen lädt die aktuelle Datei [LOGA3_Modernisieren.js](LOGA3_Modernisieren.js) über jsDelivr von GitHub. **Der Bookmarklet-Code muss für dieses Update nicht geändert werden.** CDN-Caches können Aktualisierungen verzögern.
 
-**Ein Klick:** Dark Theme an. **Noch ein Klick:** aus. **Browser neu laden:** normales LOGA3-Design.
+## Externe Abhängigkeit
 
-### Updates
+Das Design-Script lädt die JavaScript-Bibliothek [DarkReader 4.9.58](https://unpkg.com/darkreader@4.9.58/darkreader.js) von **unpkg.com**, falls sie nicht bereits geladen ist. Das entspricht dem bewährten Ansatz aus der älteren Datei `fancy_loga.js`. DarkReader manipuliert Styles im Browser und überwacht Änderungen an der Seite. Sollte DarkReader nicht ladbar sein (z. B. CSP/Netzwerk), bleiben die eigenen CSS-Anpassungen aktiv, allerdings können dann weiterhin helle Bereiche zu sehen sein.
 
-Das Bookmarklet verweist auf die Datei [LOGA3_Modernisieren.js](LOGA3_Modernisieren.js), die über [jsDelivr](https://www.jsdelivr.com/) von GitHub geladen wird. Du musst das Lesezeichen nach Designanpassungen normalerweise nicht ändern. Wegen CDN-Caching kann eine neue Version zeitverzögert erscheinen.
+**Sicherheit:** Das GitHub-Repository ist öffentlich, und mit dem Bookmarklet wird fremd gehosteter JavaScript-Code im Kontext einer angemeldeten Anwendung ausgeführt. Prüfe Änderungen vor der Verwendung, sichere das GitHub-Konto ab und nutze ausschließlich vertrauenswürdige Abhängigkeiten. Der Bookmarklet-Loader fordert den Code vom GitHub-CDN an, das Theme fordert DarkReader von unpkg an. Das Theme enthält keine fachlichen Datenzugriffe, keine eigene Datenerfassung und keine Übertragung von LOGA3-Daten an andere Dienste. Externe Bibliotheken haben technisch trotzdem Zugriff auf den Seitenkontext, sobald sie ausgeführt werden.
 
-### Wenn nichts passiert
+## Falls etwas nicht richtig aussieht
 
-Die Website kann externe Skripte über eine **Content Security Policy (CSP)** blockieren. CSP nicht deaktivieren oder umgehen. Alternativ den Inhalt von \`LOGA3_Modernisieren.js\` in **F12 → Sources/Quellen → Snippets** einfügen und manuell ausführen.
+- Seite neu laden und das Bookmarklet erneut anklicken.
+- **F12 → Konsole** öffnen: „Fancy LOGA: Dark Theme inkl. DarkReader aktiv“ zeigt die erfolgreiche Initialisierung. Warnungen zeigen Ladefehler.
+- Bei einem Kontrastfehler einen Screenshot ohne personenbezogene Daten machen. Die Feinabstimmung erfolgt pro betroffener Ansicht.
+- Wenn LOGA3 das Nachladen von Skripten per CSP verhindert, Sicherheitsrichtlinien **nicht umgehen oder deaktivieren**.
 
-## Datenschutz und Sicherheit
-
-Das Repo ist **öffentlich**. Die gespeicherten LOGA3-Originaldateien, Screenshots, Personalinformationen oder Tokens dürfen nicht mit hochgeladen werden.
-
-Das Script selbst lädt nichts nach und versendet keine Daten. **Das Bookmarklet lädt allerdings externen ausführbaren Code**, der beim Ausführen theoretisch vollständigen Zugriff auf die angemeldete Webseite hätte. Deshalb Änderungen am Repository prüfen und das GitHub-Konto absichern.
-
-Nicht in der produktiven Bedienung als garantiert fehlerfrei getestet. Bei schlecht lesbaren Feldern oder Sonderansichten bitte Screenshot **ohne personenbezogene Daten** verwenden.
+Die Darstellung ist noch nicht in der angemeldeten produktiven Oberfläche getestet. Insbesondere Statusfarben, Kalender und komplexe Tabellen vor der alltäglichen Nutzung prüfen.
