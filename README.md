@@ -1,30 +1,37 @@
-# Fancy LOGA
+# Fancy LOGA — Midnight Emerald
 
-Manuell aktivierbares, rein optisches Design für **LOGA3**.
+Ein **manuell aktivierbares Dark Theme** für die Oberfläche von LOGA3 auf tp.pi-asp.de.
 
-- Farben, Navigation, Buttons, Tabellen, Felder und Dialoge werden per CSS angepasst.
-- Kein Umbau der Anwendung, keine fachlichen Datenänderungen.
-- Kein automatischer Start. Ein Klick aktiviert, ein weiterer Klick deaktiviert das Design.
-- Ein Neuladen der Seite stellt die normale Ansicht wieder her.
-- Die Originalressourcen aus „Save all resources“ werden **nicht** veröffentlicht.
+## Was wird verändert?
 
-## Lesezeichen (Chrome / Edge)
+- Dunkle Anthrazit- und Blautöne für Flächen, Tabellen, Abschnitte und Dialoge
+- Grüne Akzente für Navigation, Buttons und aktive Elemente
+- Verbesserter Kontrast für Eingabefelder, Beschriftungen und Text
+- Optische Details: Schatten, abgerundete Ecken und Hover-Effekte
 
-1. In Chrome/Edge ein neues Lesezeichen anlegen (z. B. `Fancy LOGA`).
-2. Als **URL** den vollständigen Inhalt von [bookmarklet.txt](bookmarklet.txt) einfügen (er beginnt mit `javascript:`).
-3. In LOGA3 unter `https://tp.pi-asp.de/loga3/` anmelden.
-4. Das Lesezeichen anklicken. Nochmals anklicken = Design ausschalten.
+**Nur CSS:** keine Änderungen an Funktionen, Serverdaten, Formularwerten oder Positionen. Spezialansichten (z. B. komplexe Dienstplanraster oder Diagramme) können noch helle Bereiche enthalten und benötigen eventuell gezielte Anpassungen.
 
-Das Lesezeichen lädt die JavaScript-Datei von [jsDelivr](https://cdn.jsdelivr.net/gh/breathless8931/fancy_loga@main/LOGA3_Modernisieren.js), das die Datei aus dem öffentlichen GitHub-Repository auf `main` bereitstellt. Anpassungen an `LOGA3_Modernisieren.js` können nach dem CDN-Cache-Refresh über dasselbe Lesezeichen verteilt werden.
+## Lesezeichen installieren
 
-## Falls das Lesezeichen nicht funktioniert
+1. Öffne [bookmarklet.txt](bookmarklet.txt) und kopiere den **gesamten** Inhalt ab \`javascript:\`.
+2. Erstelle in Chrome/Edge ein Lesezeichen mit dem Namen \`Fancy LOGA\`.
+3. Füge den Code in das **URL-Feld** des Lesezeichens ein.
+4. Melde dich auf \`https://tp.pi-asp.de/loga3/\` an und klicke auf das Lesezeichen.
 
-Manche Seiten erlauben durch ihre **Content Security Policy (CSP)** keine externen Skripte. Dann kann das Bookmarklet das Script nicht nachladen. Das ist keine Fehlfunktion von LOGA3; die CSP sollte nicht umgangen oder deaktiviert werden.
+**Ein Klick:** Dark Theme an. **Noch ein Klick:** aus. **Browser neu laden:** normales LOGA3-Design.
 
-Als Alternative in Chrome/Edge: **F12 → Quellen/Sources → Snippets** öffnen, ein Snippet mit dem Inhalt von `LOGA3_Modernisieren.js` erstellen und es mit **Strg+Enter** manuell ausführen. Das Bookmarklet wurde noch nicht auf einer echten angemeldeten LOGA3-Seite getestet.
+### Updates
 
-## Sicherheit
+Das Bookmarklet verweist auf die Datei [LOGA3_Modernisieren.js](LOGA3_Modernisieren.js), die über [jsDelivr](https://www.jsdelivr.com/) von GitHub geladen wird. Du musst das Lesezeichen nach Designanpassungen normalerweise nicht ändern. Wegen CDN-Caching kann eine neue Version zeitverzögert erscheinen.
 
-⚠️ **Wichtig:** Dieses öffentliche Repository enthält ausführbaren JavaScript-Code. Wer einen externen Script-Loader auf einer angemeldeten Webseite benutzt, gibt dem jeweils geladenen Code Zugriff auf die Webseite. Daher Codeänderungen vor der Nutzung prüfen und GitHub-Konto absichern. Das Script selbst macht **keine** Netzwerkaufrufe, liest keine Personaldaten und speichert nichts.
+### Wenn nichts passiert
 
-Es werden absichtlich keine lokalen LOGA3-Ressourcen, HTML-Kopien, Cookies, Screenshots, Tokens oder vertraulichen Daten in dieses Repository hochgeladen.
+Die Website kann externe Skripte über eine **Content Security Policy (CSP)** blockieren. CSP nicht deaktivieren oder umgehen. Alternativ den Inhalt von \`LOGA3_Modernisieren.js\` in **F12 → Sources/Quellen → Snippets** einfügen und manuell ausführen.
+
+## Datenschutz und Sicherheit
+
+Das Repo ist **öffentlich**. Die gespeicherten LOGA3-Originaldateien, Screenshots, Personalinformationen oder Tokens dürfen nicht mit hochgeladen werden.
+
+Das Script selbst lädt nichts nach und versendet keine Daten. **Das Bookmarklet lädt allerdings externen ausführbaren Code**, der beim Ausführen theoretisch vollständigen Zugriff auf die angemeldete Webseite hätte. Deshalb Änderungen am Repository prüfen und das GitHub-Konto absichern.
+
+Nicht in der produktiven Bedienung als garantiert fehlerfrei getestet. Bei schlecht lesbaren Feldern oder Sonderansichten bitte Screenshot **ohne personenbezogene Daten** verwenden.
