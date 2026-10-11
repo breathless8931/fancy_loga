@@ -397,6 +397,148 @@ html.loga-manual-modern ::-webkit-scrollbar-thumb:hover {
     transition: none !important;
   }
 }
+
+/* === Dashboard-Überarbeitung (v1.1): sichtbare Grün- und Weißflächen ===
+   Klassen aus dem React-Bundle der gespeicherten LOGA3-Ressourcen.
+   Nur das Dashboard anpassen; Buchungsdiagramme und Statusfarben bleiben.
+*/
+html.loga-manual-modern {
+  --l3-dashboard-green-light: #284d49;
+  --l3-dashboard-green-dark: #0e141d;
+  --l3-dashboard-background-gradient-start-color: #141f2c;
+  --l3-dashboard-background-gradient-end-color: #0e141d;
+  --l3-dashboard-toolbar-passive-color: #202c38;
+  --l3-dashboard-toolbar-active-color: #253b40;
+}
+
+/* Der große grüne Hintergrund gehört zur eigenen React-Dashboard-Ansicht. */
+html.loga-manual-modern #app-dashboard-wrapper,
+html.loga-manual-modern #app-dashboard-wrapper .DashboardView,
+html.loga-manual-modern #app-dashboard-wrapper .left-panel,
+html.loga-manual-modern #app-dashboard-wrapper .middle-panel,
+html.loga-manual-modern #app-dashboard-wrapper .right-panel,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-pager,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-page,
+html.loga-manual-modern #app-dashboard-wrapper #dashboardExp,
+html.loga-manual-modern #app-dashboard-wrapper #dashboardStd,
+html.loga-manual-modern #app-dashboard-wrapper #dashboardPageMiddle,
+html.loga-manual-modern #app-dashboard-wrapper #dashboardPageRight {
+  background-color: #0e141d !important;
+  background-image: none !important;
+}
+/* Das Root selbst erhält einen dezenten, dunklen Verlauf. */
+html.loga-manual-modern #app-dashboard-wrapper {
+  background: radial-gradient(ellipse at 55% 10%, #1a3036 0%, #111b26 43%, #0e141d 100%) !important;
+}
+
+/* Die zuvor weißen Dashboard-Karten. */
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget {
+  background: #1b2634 !important;
+  border: 1px solid #3b4b5a !important;
+  border-radius: 14px !important;
+  box-shadow: 0 14px 30px rgba(0, 0, 0, .28) !important;
+  color: #e9f0f7 !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget-content {
+  background: #1b2634 !important;
+  background-image: none !important;
+  color: #e9f0f7 !important;
+  border-radius: 13px !important;
+}
+/* Viele Kachel-Komponenten rendern selbst eine weitere weiße Root-Fläche. */
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget-content > .non-click-focusable > div,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget-content > .non-click-focusable > section,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget-content > div:not(.deleteIcon-wrapper) {
+  background-color: #1b2634 !important;
+  background-image: none !important;
+  color: #e9f0f7 !important;
+  border-radius: 12px;
+}
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .widget-header,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .widget-header-wrapper,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .widget-body,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .widget-content,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .dashboard-widget-footer,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .calendar_container,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .calendar_body,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .calendar {
+  background-color: transparent !important;
+  color: #e9f0f7 !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .widget-header-title,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .widget-header-title span,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .value,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .description,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .widget-title,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .label {
+  color: #e9f0f7 !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .widget-header-title {
+  font-weight: 650;
+}
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .dashboard-widget-footer {
+  border-top-color: #304251 !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .dashboard-widget-footer button:not(:disabled),
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .dashboard-widget-footer .button-primary {
+  border-radius: 8px !important;
+}
+
+/* Kalender: Oberfläche dunkel, Tages-/Statusindikatoren unangetastet. */
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .DayPicker,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .DayPicker-wrapper,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .DayPicker-Months,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .DayPicker-Month {
+  background-color: transparent !important;
+  color: #dce8ef !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .DayPicker-Weekday,
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .DayPicker-Caption {
+  color: #b5c9d5 !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .dashboard-widget .DayPicker-Day:not(.DayPicker-Day--selected):not(.DayPicker-Day--today):not(.DayPicker-Day--disabled) {
+  color: #dce8ef !important;
+}
+
+/* Die bisher grellgrüne angeheftete Schnellzugriffsleiste. */
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-smart-things-panel,
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-animated-wrapper,
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper {
+  background: #192632 !important;
+  background-image: none !important;
+  color: #e9f0f7 !important;
+  border-color: #3c7768 !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper {
+  border: 1px solid #3a7468 !important;
+  border-radius: 999px !important;
+  box-shadow: 0 10px 26px rgba(0, 0, 0, .36), 0 0 0 1px rgba(73, 207, 162, .12) inset !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper .smart-things-category-container {
+  background: transparent !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper .smart-things-category-icon {
+  background-color: #274c49 !important;
+  border-radius: 50% !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper .smart-thing-container {
+  background: #273645 !important;
+  color: #eff6fa !important;
+  border: 1px solid #425466 !important;
+  border-radius: 999px !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper .smart-thing-container:hover {
+  background: #315349 !important;
+  border-color: #5eae90 !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper .smart-thing-title {
+  color: #e9f0f7 !important;
+}
+html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper .smart-thing-icon {
+  background-color: #2d7260 !important;
+  border-radius: 50%;
+}
+
 `;
 
   const root = document.documentElement;
