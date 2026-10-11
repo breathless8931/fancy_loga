@@ -25,6 +25,38 @@
     return;
   }
 
+  // DarkReader ist der funktionierende Teil des älteren fancy_loga.js.
+  // Die Version ist festgepinnt; nur die offizielle Bibliothek wird geladen.
+  const DARKREADER_SRC = "https://unpkg.com/darkreader@4.9.58/darkreader.js";
+  const DARKREADER_TAG_ID = "fancy-loga-darkreader-v2";
+
+  function loadDarkReader() {
+    if (window.DarkReader && typeof window.DarkReader.enable === "function") {
+      return Promise.resolve(window.DarkReader);
+    }
+    return new Promise((resolve) => {
+      const script = document.createElement("script");
+      script.id = DARKREADER_TAG_ID;
+      script.src = DARKREADER_SRC;
+      script.async = true;
+      let finished = false;
+      const finish = (lib) => {
+        if (finished) return;
+        finished = true;
+        clearTimeout(timeout);
+        if (!lib) script.remove();
+        resolve(lib);
+      };
+      const timeout = setTimeout(() => finish(null), 9000);
+      script.onload = () => finish(
+        window.DarkReader && typeof window.DarkReader.enable === "function"
+          ? window.DarkReader : null
+      );
+      script.onerror = () => finish(null);
+      (document.head || document.documentElement).appendChild(script);
+    });
+  }
+
   const css = String.raw`
 /*
  * MIDNIGHT EMERALD
@@ -539,11 +571,84 @@ html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper .smart-thin
   border-radius: 50%;
 }
 
+
+/*
+ * Korrektur aus dem alten fancy_loga.js: Die tatsächliche Dashboard-Fläche
+ * liegt in .dashboard-view .dashboard-layout (nicht nur in #app-dashboard-wrapper).
+ */
+html.loga-manual-modern .dashboard-view,
+html.loga-manual-modern .dashboard-view .dashboard-layout {
+  background-color: #0e141d !important;
+  background-image: radial-gradient(ellipse at 40% 4%, #21333d 0%, #141d2b 44%, #0e141d 100%) !important;
+  color: #e9f0f7 !important;
+}
+html.loga-manual-modern #main-app-wrapper #app-dashboard-wrapper,
+html.loga-manual-modern #main-app-wrapper #app-content-wrapper {
+  background-image: linear-gradient(180deg, #151f2c, #0e141d) !important;
+}
+html.loga-manual-modern body.IsInFullscreen {
+  background-image: linear-gradient(180deg, #151f2c, #0e141d) !important;
+}
+
+/* Dashboard-spezifische Innenelemente aus dem älteren, funktionierenden Script. */
+html.loga-manual-modern .dashboard-view .newDATasks-container,
+html.loga-manual-modern .dashboard-view .quick-add-sd-wrapper,
+html.loga-manual-modern .dashboard-view .smart-thing-container {
+  background-color: #223241 !important;
+  color: #e9f0f7 !important;
+}
+html.loga-manual-modern .dashboard-view .dashboard-widget,
+html.loga-manual-modern .dashboard-view .dashboard-widget-content,
+html.loga-manual-modern .dashboard-view .PhotoWithtitlesStyle,
+html.loga-manual-modern .dashboard-view .terminal-timer {
+  background-color: #1b2634 !important;
+  color: #e9f0f7 !important;
+}
+html.loga-manual-modern .dashboard-view .dashboard-widget-footer,
+html.loga-manual-modern .dashboard-view .timeproject-widget-footer {
+  background-color: #222f3d !important;
+  color: #e9f0f7 !important;
+  border-top: 1px solid #334757 !important;
+}
+html.loga-manual-modern .dashboard-view .delimiter-line,
+html.loga-manual-modern .dashboard-view .terminal .online-terminal .online-terminal-container .terminal-delimiter {
+  border-color: #536b7b !important;
+}
+html.loga-manual-modern .dashboard-view .calendar .DayPicker-Day--outside,
+html.loga-manual-modern .dashboard-view .calendar .DayPicker-Weekday {
+  background-color: transparent !important;
+  color: #9badbc !important;
+}
+html.loga-manual-modern .dashboard-view .calendar .DayPicker-NavButton {
+  background-color: transparent !important;
+}
+/* Nie pauschal SVG-Farben oder Tabellenstatus einfärben: Diagramme bleiben echt. */
+
 `;
 
   const root = document.documentElement;
   let sheet = null;
   let styleTag = null;
+
+  // Der An/Aus-Schalter wird sofort registriert, auch während DarkReader lädt.
+  const session = {
+    stopped: false,
+    ownsDarkReader: false,
+    stop() {
+      this.stopped = true;
+      root.classList.remove(ROOT_CLASS);
+      if (sheet && "adoptedStyleSheets" in document) {
+        document.adoptedStyleSheets = document.adoptedStyleSheets.filter(s => s !== sheet);
+      }
+      if (styleTag) styleTag.remove();
+      if (this.ownsDarkReader && window.DarkReader &&
+          typeof window.DarkReader.disable === "function") {
+        try { window.DarkReader.disable(); }
+        catch (error) { console.warn("Fancy LOGA: DarkReader konnte nicht deaktiviert werden:", error); }
+        this.ownsDarkReader = false;
+      }
+    }
+  };
 
   try {
     if (typeof CSSStyleSheet !== "undefined" && "adoptedStyleSheets" in document) {
@@ -555,31 +660,40 @@ html.loga-manual-modern #app-dashboard-wrapper .quick-add-sd-wrapper .smart-thin
         sheet = null;
       }
     }
-
     if (!sheet) {
       styleTag = document.createElement("style");
       styleTag.id = STYLE_ID;
       styleTag.textContent = css;
       (document.head || root).appendChild(styleTag);
     }
-
     root.classList.add(ROOT_CLASS);
-    window[STATE_KEY] = {
-      stop() {
-        root.classList.remove(ROOT_CLASS);
-        if (sheet) {
-          document.adoptedStyleSheets = document.adoptedStyleSheets.filter(s => s !== sheet);
-        }
-        if (styleTag) styleTag.remove();
+    window[STATE_KEY] = session;
+    console.info("Fancy LOGA: CSS aktiv; DarkReader wird geladen.");
+
+    // Die alte Version hat DarkReader erfolgreich als Basis genutzt.
+    // Wir übernehmen das Prinzip, aber nicht das alte Einstellungs-Panel,
+    // GIF-Hintergründe, localStorage oder DOM-Inline-Style-Manipulationen.
+    void (async () => {
+      const reader = await loadDarkReader();
+      if (session.stopped) return;
+      if (!reader) {
+        console.warn("Fancy LOGA: DarkReader konnte nicht geladen werden. CSS-Fallback bleibt aktiv (CSP/Netzwerk prüfen).");
+        return;
       }
-    };
-    console.info("Fancy LOGA: Midnight Emerald aktiviert. Nochmals anklicken = ausschalten.");
+      try {
+        const alreadyEnabled = typeof reader.isEnabled === "function" && reader.isEnabled();
+        if (!alreadyEnabled) {
+          reader.enable({ brightness: 100, contrast: 90, sepia: 10 });
+          session.ownsDarkReader = true;
+        }
+        console.info("Fancy LOGA: Dark Theme inkl. DarkReader aktiv. Erneuter Klick schaltet Fancy LOGA aus.");
+      } catch (error) {
+        console.warn("Fancy LOGA: DarkReader konnte nicht aktiviert werden; CSS-Fallback ist aktiv.", error);
+      }
+    })();
   } catch (error) {
-    root.classList.remove(ROOT_CLASS);
-    if (sheet && "adoptedStyleSheets" in document) {
-      document.adoptedStyleSheets = document.adoptedStyleSheets.filter(s => s !== sheet);
-    }
-    if (styleTag) styleTag.remove();
+    session.stop();
+    if (window[STATE_KEY] === session) delete window[STATE_KEY];
     console.error("Fancy LOGA konnte das Theme nicht aktivieren:", error);
   }
 })();
