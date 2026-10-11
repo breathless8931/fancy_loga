@@ -1,35 +1,40 @@
-# Fancy LOGA – Midnight Emerald
+# Fancy LOGA – Midnight Emerald v4 (Diagnose)
 
-Ein manuell aktivierbares Dark Theme für die LOGA3-Oberfläche auf `tp.pi-asp.de`.
+Manuell aktivierbares dunkles Design für LOGA3 auf `tp.pi-asp.de`. Es verändert nur die Darstellung der Browserseite, nicht die LOGA3-Daten.
+
+## Das Problem: ältere Version aus jsDelivr
+
+jsDelivr cached GitHub-Branch-Verweise wie `@main` bis zu 12 Stunden. Die vorherige Bookmarklet-Version konnte dadurch noch ältere Theme-Dateien laden, obwohl das Repository längst aktualisiert wurde.
+
+**Diagnoseversion v4:** Das Lesezeichen verwendet nun einen festen GitHub-Commit:
+
+`a0c56707cc530c83458f3dda0b31ec8e24c457e3`
+
+Damit ist eindeutig, welche Version geladen wird. Bei **zukünftigen Script-Updates** muss dieses Lesezeichen erneut aus der jeweils aktuellen [bookmarklet.txt](bookmarklet.txt) kopiert werden. Eine Alternative für später ist die `@main`-URL mit zeitverzögerten Updates.
+
+## Installation und Diagnose
+
+1. [bookmarklet.txt](bookmarklet.txt) öffnen, den **gesamten** Inhalt (ab `javascript:`) kopieren.
+2. Das **bestehende** Lesezeichen `Fancy LOGA` bearbeiten und die **URL komplett ersetzen**.
+3. LOGA3 vollständig neu laden, anmelden, dann das Lesezeichen anklicken.
+4. Oben rechts erscheint ein kleines Feld, wenn tatsächlich **Fancy LOGA v4** ausgeführt wurde.
+5. Die Meldung zeigt danach `DarkReader aktiv` oder eine Ladefehlermeldung.
+
+- **Kein Versionsfeld:** Das neue Script wird nicht ausgeführt; Lesezeichen-URL und die Browserkonsole (F12) prüfen.
+- **Versionsfeld, aber „DarkReader blockiert“:** Browser/CSP blockiert das externe Laden von `unpkg.com`.
+- **Versionsfeld und „DarkReader aktiv“, aber noch grün:** Dann müssen wir direkt die betroffenen CSS-Elemente präziser überschreiben. Screenshot ohne Personen-/Personaldaten erstellen.
+
+Ein weiterer Klick deaktiviert das Design, neu laden stellt den Originalzustand wieder her.
 
 ## Technik
 
-- **DarkReader 4.9.58** als Basis für die automatische Dunkelfärbung dynamischer LOGA3-Komponenten.
-- Ergänzende, gezielte CSS-Regeln für Dashboard-Hintergrund, Kacheln, Kalender, Schnellzugriffsleiste, Buttons und Tabellen.
-- Die Selektoren `.dashboard-view .dashboard-layout`, `.dashboard-widget` und `.quick-add-sd-wrapper` sowie die DarkReader-Idee stammen aus der älteren, vom Nutzer bereitgestellten Datei [fancy_loga.js](fancy_loga.js).
-- Kein Einstellungsmenü, keine Bild-/GIF-Hintergründe, kein Speichern von Konfigurationen im Browser.
-- Die Anwendung selbst und alle fachlichen Daten bleiben unverändert; es werden nur Darstellungsregeln im Browser verändert.
+- **DarkReader v4.9.58** wird zur flächendeckenden Farbumwandlung von `https://unpkg.com/darkreader@4.9.58/darkreader.js` geladen.
+- Eigene CSS-Regeln kümmern sich um Dashboard, Tabellen, Buttons, Karten und Navigation.
+- Dashboard-Variablen wie `--l3-dashboard-green-light` werden analog zur älteren [fancy_loga.js](fancy_loga.js) nun gezielt am `:root` mit hoher Priorität gesetzt und beim Deaktivieren wiederhergestellt.
+- Keine Speicherung von persönlichen Einstellungen, kein Einstellungsmenü und keine GIF-/Bild-Hintergründe.
 
-## Bookmarklet nutzen
+## Sicherheit
 
-1. Den gesamten Inhalt von [bookmarklet.txt](bookmarklet.txt) kopieren (beginnt mit `javascript:`).
-2. In Chrome/Edge ein Lesezeichen namens **Fancy LOGA** erstellen und den Code als URL einfügen.
-3. LOGA3 unter `https://tp.pi-asp.de/loga3/` öffnen und anmelden.
-4. Bookmarklet anklicken: Design ein. Nochmals anklicken: Design aus. Nach einem Neuladen: ursprüngliches Design.
+Das Repository ist öffentlich. Das Script lädt zusätzlich eine externe Bibliothek nach. Beide Skripte laufen im Browserkontext einer angemeldeten Anwendung und haben technisch Zugriff auf den Seiteninhalt. Daher keine unbekannten Updates blind ausführen, den GitHub-Account absichern und keine Screenshots mit personenbezogenen Daten veröffentlichen. Das Theme enthält keine eigene Logik zur Datenerfassung oder -übertragung, aber externe Requests zum Laden der Bibliotheken finden statt.
 
-Das Lesezeichen lädt die aktuelle Datei [LOGA3_Modernisieren.js](LOGA3_Modernisieren.js) über jsDelivr von GitHub. **Der Bookmarklet-Code muss für dieses Update nicht geändert werden.** CDN-Caches können Aktualisierungen verzögern.
-
-## Externe Abhängigkeit
-
-Das Design-Script lädt die JavaScript-Bibliothek [DarkReader 4.9.58](https://unpkg.com/darkreader@4.9.58/darkreader.js) von **unpkg.com**, falls sie nicht bereits geladen ist. Das entspricht dem bewährten Ansatz aus der älteren Datei `fancy_loga.js`. DarkReader manipuliert Styles im Browser und überwacht Änderungen an der Seite. Sollte DarkReader nicht ladbar sein (z. B. CSP/Netzwerk), bleiben die eigenen CSS-Anpassungen aktiv, allerdings können dann weiterhin helle Bereiche zu sehen sein.
-
-**Sicherheit:** Das GitHub-Repository ist öffentlich, und mit dem Bookmarklet wird fremd gehosteter JavaScript-Code im Kontext einer angemeldeten Anwendung ausgeführt. Prüfe Änderungen vor der Verwendung, sichere das GitHub-Konto ab und nutze ausschließlich vertrauenswürdige Abhängigkeiten. Der Bookmarklet-Loader fordert den Code vom GitHub-CDN an, das Theme fordert DarkReader von unpkg an. Das Theme enthält keine fachlichen Datenzugriffe, keine eigene Datenerfassung und keine Übertragung von LOGA3-Daten an andere Dienste. Externe Bibliotheken haben technisch trotzdem Zugriff auf den Seitenkontext, sobald sie ausgeführt werden.
-
-## Falls etwas nicht richtig aussieht
-
-- Seite neu laden und das Bookmarklet erneut anklicken.
-- **F12 → Konsole** öffnen: „Fancy LOGA: Dark Theme inkl. DarkReader aktiv“ zeigt die erfolgreiche Initialisierung. Warnungen zeigen Ladefehler.
-- Bei einem Kontrastfehler einen Screenshot ohne personenbezogene Daten machen. Die Feinabstimmung erfolgt pro betroffener Ansicht.
-- Wenn LOGA3 das Nachladen von Skripten per CSP verhindert, Sicherheitsrichtlinien **nicht umgehen oder deaktivieren**.
-
-Die Darstellung ist noch nicht in der angemeldeten produktiven Oberfläche getestet. Insbesondere Statusfarben, Kalender und komplexe Tabellen vor der alltäglichen Nutzung prüfen.
+Nicht auf der realen angemeldeten Oberfläche getestet. Funktionen, Kalender, Statusfarben und Eingaben sorgfältig prüfen. Sicherheitsregeln der Seite (CSP) niemals umgehen.
